@@ -1,7 +1,11 @@
-package br.com.ada.ifome.usuario;
+package br.com.ada.ifome.validCadusuario;
+
 
 import br.com.ada.ifome.exceptions.CpfInvalidoException;
 import br.com.ada.ifome.exceptions.UsuarioInvalidoException;
+import br.com.ada.ifome.usuario.Usuario;
+import br.com.ada.ifome.usuario.UsuarioRepository;
+import br.com.ada.ifome.usuario.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,15 +21,6 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class UsuarioTest {
 
-    // 1 - Passar usuário null
-    // (Falhar) -> Esperar uma exception de usuario invalido
-
-    // 2 - Passar cpf incorreto: 123456789123
-    // 3 - Passar cpf incorreto: 1234567891e
-    // (Validar se a exception CpfInvalidoException foi chamada)
-
-    // 3 - Passar cpf valido: 12345678912 (Sucesso)
-
     @Mock
     private UsuarioRepository usuarioRepository;
 
@@ -34,7 +29,7 @@ public class UsuarioTest {
 
     @Test
     public void testaUsuarioNull() {
-        // 1. chamar o service passando referência null
+
         assertThrows(UsuarioInvalidoException.class, () -> usuarioService.salvar(null));
     }
 
@@ -54,14 +49,14 @@ public class UsuarioTest {
 
     @Test
     public void usuarioComCpfValido() {
-        // Mockar ação de save
+
         var usuario = new Usuario();
         usuario.setCpf("04455566633");
         when(usuarioRepository.save(any())).thenReturn(usuario);
         var usuarioSalvo = usuarioService.salvar(usuario);
 
         assertNotNull(usuarioSalvo);
-        // Validar se foi chamado o save do repository
+
         verify(usuarioRepository, Mockito.times(1)).save(usuario);
     }
 }
