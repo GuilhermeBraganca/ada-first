@@ -1,10 +1,11 @@
 package br.com.ada.ifome.entregador;
-
-import br.com.ada.ifome.commonsvalidation.Validador;
+import br.com.ada.ifome.dadosbancarios.DadosBancariosService;
 import br.com.ada.ifome.documento.DocumentoService;
 import br.com.ada.ifome.exceptions.*;
+import br.com.ada.ifome.veiculo.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import br.com.ada.ifome.commonsvalidation.Validador;
 
 @Service
 @RequiredArgsConstructor
@@ -14,9 +15,13 @@ public class EntregadorService {
 
     private Validador validator = new Validador();
 
-    private final DocumentoService documentoService ;
+    private final DocumentoService documentoService = new DocumentoService();
 
-    public br.com.ada.validCad.entregador.Entregador salvar (br.com.ada.validCad.entregador.Entregador entregador) {
+    private final VeiculoService veiculoService = new VeiculoService();
+
+    private final DadosBancariosService dadosBancariosService = new DadosBancariosService();
+
+    public Entregador salvar (Entregador entregador) {
         if (entregador == null) {
             throw new UsuarioInvalidoException();
         }
@@ -40,7 +45,20 @@ public class EntregadorService {
             throw new CnhVencidaException();
         }
 
-        return entregadorRepository.save(entregador);
+        if (entregador.getVeiculo() != null) {
+            if (!veiculoService.validaDataModeloVeiculo(entregador.getVeiculo().getAnoModelo())
+                    || !veiculoService.validaPlacaVeiculo(entregador.getVeiculo().getPlaca())
+                    || !veiculoService.validaRenavamVeiculo(entregador.getVeiculo().getRenavam())) {
+                throw new VeiculoInvalidoException();
+            }
+        }
 
+        if (entregador.getDadosBancarios() != null) {
+            dadosBancariosService.validarContaBancaria(entregador.getDadosBancarios());
+            dadosBancariosService.validarTipoConta(entregador.getDadosBancarios());
+            dadosBancariosService.validarInstituicaoBancaria(entregador.getDadosBancarios());
+        }
+
+        return entregadorRepository.save(entregador); // Mockar o usuário repository...
     }
 }

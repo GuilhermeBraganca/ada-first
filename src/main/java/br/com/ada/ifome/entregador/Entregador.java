@@ -1,4 +1,4 @@
-package br.com.ada.validCad.entregador;
+package br.com.ada.ifome.entregador;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,13 +10,11 @@ import javax.persistence.OneToOne;
 import br.com.ada.ifome.dadosbancarios.DadosBancarios;
 import br.com.ada.ifome.documento.Documento;
 import br.com.ada.ifome.endereco.Endereco;
-import br.com.ada.ifome.entregador.Veiculo;
+import br.com.ada.ifome.veiculo.Veiculo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @Data
 public class Entregador {
